@@ -5,3 +5,8 @@ const val ROUTE_REGISTER = "register"
 const val ROUTE_LOGIN = "login"
 
 const val ROUTE_DASHBOARD = "dashboard"
+const val ROUTE_ADDPAINT = "addpaint"
+const val ROUTE_PAINTLIST = "paintlist"
+const val ROUTE_UPDATEPAINTS = "updatepaints"
+const val ROUTE_USERDASH = "userdash"
+const val ROUTE_PROFILE = "userdash"

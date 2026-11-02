@@ -11,9 +11,9 @@ composeBom = "2026.02.01"
 googleGmsGoogleServices = "4.5.0"
 firebaseDatabase = "21.0.0"
 firebaseFirestoreKtx = "25.1.4"
-firebaseAuthKtx = "23.2.1"
+firebaseAuthKtx = "23.2.0"
 firebaseCrashlyticsBuildtools = "3.0.8"
-firebaseAuth = "25.0.0"
+firebaseAuth = "23.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }

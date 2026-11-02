@@ -10,6 +10,7 @@ import com.example.arts.navigation.ROUTE_LOGIN
 import com.example.arts.navigation.ROUTE_REGISTER
 //import com.example.arts.navigation.ROUTE_USERDASHBOARD
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.auth.AuthState
 import com.google.firebase.database.FirebaseDatabase
 
 class AuthViewModel ( var navController: NavHostController, var context : Context){
@@ -70,49 +71,56 @@ class AuthViewModel ( var navController: NavHostController, var context : Contex
             }
         }
     }
-    // Signout function
-//    fun signout() {
-//        mAuth.signOut()
-//        _authState.value = AuthState.Idle
-//    }
-//
-//    // Getting current username
-//    fun getCurrentUsername(onResult: (String) -> Unit) {
-//        val userId = mAuth.currentUser?.uid
-//        if (userId == null) {
-//            onResult("user")
-//            return
-//        }
-//
-//        database.getReference("Users").child(userId).get()
-//            .addOnSuccessListener { snapshot ->
-//                val fullName = snapshot.child("fullName").getValue(String::class.java)
-//                onResult(fullName ?: "user")
-//            }
-//            .addOnFailureListener {
-//                onResult("user")
-//            }
-//    }
-//
-//    // Get current user profile
-//    fun getUserProfile(onResult: (User?) -> Unit) {
-//        val userId = mAuth.currentUser?.uid
-//        if (userId == null) {
-//            onResult(null)
-//            return
-//        }
-//
-//        database.getReference("Users").child(userId).get()
-//            .addOnSuccessListener { snapshot ->
-//                if (snapshot.exists()) {
-//                    val user = snapshot.getValue(User::class.java)
-//                    onResult(user)
-//                } else {
-//                    onResult(null)
-//                }
-//            }
-//            .addOnFailureListener {
-//                onResult(null)
-//            }
-//    }
+
+ //signout function
+ fun signout(){
+     mAuth.signOut()
+     navController.navigate(ROUTE_LOGIN)
+     { popUpTo(0) }
+ }
+    //getting current username
+    fun getCurrentUsername(onResult:(String) -> Unit){
+        val userId = mAuth.currentUser?.uid
+        if (userId==null){
+            onResult("user")
+            return
+        }
+        FirebaseDatabase.getInstance().getReference("Users")
+            .child(userId)
+            .get()
+            .addOnSuccessListener {snapshot ->
+                val fullName=snapshot.child("fullName").getValue(String::class.java)
+                onResult(fullName ?: "user")
+            }
+
+
+    }
+    //get current user profile
+    fun getUserProfile(onResult: (User?) -> Unit){
+        //get current user ID
+        val userId=mAuth.currentUser?.uid
+        if(userId==null){
+            onResult(null)
+            return
+        }
+        //fetch user data from firebase database
+        FirebaseDatabase.getInstance().getReference("Users")
+            .child(userId)
+            .get()
+            .addOnSuccessListener { snapshot ->
+                if(snapshot.exists()) {
+                    val user = snapshot.getValue(User::class.java)
+                    //return the user profile
+                    onResult(user)
+                }else {
+                    onResult(null)
+                }
+            }
+
+            .addOnFailureListener {
+                onResult(null)
+            }
+
+    }
+
 }
