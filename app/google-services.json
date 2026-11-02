@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "567097629158",
+    "firebase_url": "https://arts-4a797-default-rtdb.firebaseio.com",
+    "project_id": "arts-4a797",
+    "storage_bucket": "arts-4a797.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:567097629158:android:bdc93eda7946087d501e27",
+        "android_client_info": {
+          "package_name": "com.example.arts"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAh_Xy3zDSd2Dg6oUomaYMfWXMHQjKS94"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
