@@ -52,7 +52,7 @@ fun AddPaintScreen(navController : NavHostController){
     Scaffold(
         // Add a topbar
         topBar = {
-            TopAppBar(title = {Text("Add Product", color = Color(0xFFC0EDAD), fontSize = 20.sp)},
+            TopAppBar(title = {Text("Add painting", color = Color(0xFFC0EDAD), fontSize = 20.sp)},
 
                 colors = topAppBarColors(
                     containerColor = Color(0xFFEDADE0),
@@ -72,11 +72,10 @@ fun AddPaintScreen(navController : NavHostController){
                 .padding(innerpadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text= "Add Product",fontSize = 20.sp, color = Color(0xFF832B1C))
+            Text(text= "Add painting",fontSize = 20.sp, color = Color(0xFF832B1C))
             Spacer(modifier = Modifier.height(10.dp))
             var productName by remember { mutableStateOf("") }
             var description by remember { mutableStateOf( "") }
-            var price by remember { mutableStateOf("") }
             var imageUri by remember {mutableStateOf<Uri?>(null)}
             val imagePickerLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.GetContent(),
@@ -88,7 +87,7 @@ fun AddPaintScreen(navController : NavHostController){
             OutlinedTextField(
                 value = productName,
                 onValueChange = {productName=it},
-                label = { Text("Product Name")},
+                label = { Text("Painting's Name")},
                 modifier = Modifier.padding(8.dp)
             )
             Spacer(modifier = Modifier.height(10.dp))
@@ -96,16 +95,8 @@ fun AddPaintScreen(navController : NavHostController){
             OutlinedTextField(
                 value = description,
                 onValueChange = { description=it },
-                label = { Text("Product Description")},
+                label = { Text("Painting's description")},
                 modifier = Modifier.padding(8.dp)
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            OutlinedTextField(
-                value = price,
-                onValueChange = { price=it },
-                label = { Text("Product Price")},
-                modifier = Modifier.padding(8.dp),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
             Spacer(modifier = Modifier.height(10.dp))
             //image preview
@@ -117,7 +108,7 @@ fun AddPaintScreen(navController : NavHostController){
             ) {
                 AsyncImage(
                     model = imageUri ?: R.drawable.mountain_adventure_logo,
-                    contentDescription = "Product Image",
+                    contentDescription = "Painting's Image",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.size(140.dp)
                 )
@@ -126,27 +117,25 @@ fun AddPaintScreen(navController : NavHostController){
             OutlinedButton(onClick = {imagePickerLauncher.launch("image/*")}){
                 Text("Pick an image", fontSize = 10.sp, color= Color(0xFF994A3C))
             }
-            val context= LocalContext.current
-            val myProductViewmodel = ArtViewModel(navController, context)
+            val context = LocalContext.current
+            val myArtViewmodel = remember { ArtViewModel(navController, context) }
             Button(
                 onClick = {
-                    myProductViewmodel.addProduct(
+                    myArtViewmodel.addProduct(
                         name = productName,
-                        price = price,
                         description = description,
                         imageUri = imageUri
                     )
                     //clear outlined TextFields
-                    productName=""
-                    price=""
-                    description=""
-                    imageUri=null
+                    productName = ""
+                    description = ""
+                    imageUri = null
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
                 colors = buttonColors(containerColor = Color(0xFF507FE5))
-            ) {Text("Add Product", color = Color(0xFFE5B650), fontSize = 20.sp)}
+            ) {Text("Add Painting", color = Color(0xFFE5B650), fontSize = 20.sp)}
 
         }
     }

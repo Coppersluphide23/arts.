@@ -36,7 +36,7 @@ class ArtViewModel (var navController: NavHostController, val context: Context) 
     //functions
     //crud-create,read,update & delete
     //upload product to firebase realtime database
-    fun addProduct(name: String, price: String, description: String, imageUri: Uri?) {
+    fun addProduct(name: String, description: String, imageUri: Uri?) {
         val ref = databasereference.push()
         val currentUser = FirebaseAuth.getInstance().currentUser
         val userId = currentUser?.uid ?: ""
@@ -51,7 +51,6 @@ class ArtViewModel (var navController: NavHostController, val context: Context) 
                 val productData = mapOf(
                     "id" to ref.key,
                     "name" to name,
-                    "price" to price,
                     "description" to description,
                     "userId" to userId,
                     "imageUrl" to imageUrl
@@ -60,7 +59,7 @@ class ArtViewModel (var navController: NavHostController, val context: Context) 
                     if (it.isSuccessful){
                         Toast.makeText(context,"Product added successfully", Toast.LENGTH_LONG).show()
                         //navigate to product list
-                        navController.navigate("")
+                        navController.navigate(ROUTE_PAINTLIST)
 
                     }
                     else{
@@ -100,7 +99,7 @@ class ArtViewModel (var navController: NavHostController, val context: Context) 
     }
     //r - Read products from db
     //fetch all products from real time
-    fun allProducts(products: SnapshotStateList<Art>){
+    fun allPaintings(products: SnapshotStateList<Art>){
         databasereference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 products.clear()
@@ -116,9 +115,12 @@ class ArtViewModel (var navController: NavHostController, val context: Context) 
             }
         })
     }
+
+    fun allProducts(products: SnapshotStateList<Art>) = allPaintings(products)
+
     //u-update
     //update existing product in firebase
-    fun updateProduct(productId: String, name: String, price: String, description: String, imageUri: Uri?){
+    fun updatePaintings(productId: String, name: String, description: String, imageUri: Uri?){
         CoroutineScope(Dispatchers.IO).launch {
             try{
                 val newImageUrl = imageUri?.let{uploadToCloudinary(context,it)}
@@ -127,7 +129,6 @@ class ArtViewModel (var navController: NavHostController, val context: Context) 
                 val updates=mutableMapOf<String,Any>(
                     "id" to productId,
                     "name" to name,
-                    "price" to price,
                     "description" to description,
                     "userId" to userId,
                 )
@@ -148,6 +149,9 @@ class ArtViewModel (var navController: NavHostController, val context: Context) 
         }
 
     }
+
+    fun updateProduct(productId: String, name: String, description: String, imageUri: Uri?) =
+        updatePaintings(productId, name, description, imageUri)
     //d-delete
     //deletes an existing product from realtime db
     fun deleteProduct(productId: String){

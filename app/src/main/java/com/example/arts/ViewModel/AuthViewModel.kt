@@ -8,6 +8,7 @@ import com.example.arts.navigation.ROUTE_DASHBOARD
 //import com.example.arts.navigation.ROUTE_DASHBOARD
 import com.example.arts.navigation.ROUTE_LOGIN
 import com.example.arts.navigation.ROUTE_REGISTER
+import com.example.arts.navigation.ROUTE_USERDASH
 //import com.example.arts.navigation.ROUTE_USERDASHBOARD
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.auth.AuthState
@@ -62,7 +63,7 @@ class AuthViewModel ( var navController: NavHostController, var context : Contex
                         if (role == "admin") {
                             navController.navigate(ROUTE_DASHBOARD)
                         } else {
-                            //navController.navigate(ROUTE_USERDASHBOARD)
+                            navController.navigate(ROUTE_USERDASH)
                         }
                         Toast.makeText(context, "Login Successful", Toast.LENGTH_LONG).show()
                     }

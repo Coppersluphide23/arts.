@@ -52,7 +52,6 @@ fun UpdatePaintScreen(
 ) {
     var productName by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
-    var price by remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var imageUrl by remember { mutableStateOf<String?>(null) }
 
@@ -78,7 +77,7 @@ fun UpdatePaintScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Update Product", color = Color(0xFFC0EDAD), fontSize = 20.sp) },
+                title = { Text("Update Paint", color = Color(0xFFC0EDAD), fontSize = 20.sp) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFFEDADE0),
                     titleContentColor = Color(0xFF994A3C)
@@ -116,19 +115,13 @@ fun UpdatePaintScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            OutlinedTextField(
-                value = price,
-                onValueChange = { price = it },
-                label = { Text("Product Price") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-            )
+
 
             // Image Preview (New selected URI or fallback to fetched remote URL)
             val imageSource: Any? = imageUri ?: imageUrl
             AsyncImage(
                 model = imageSource,
-                contentDescription = "Selected Product Image",
+                contentDescription = "Selected Painting's Image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -145,10 +138,9 @@ fun UpdatePaintScreen(
 
             Button(
                 onClick = {
-                    viewModel.updateProduct(
+                    viewModel.updatePaintings(
                         productId = productId,
                         name = productName,
-                        price = price,
                         description = description,
                         imageUri = imageUri
                     )
@@ -159,7 +151,7 @@ fun UpdatePaintScreen(
                     contentColor = Color.White
                 )
             ) {
-                Text("Update Product", fontSize = 16.sp)
+                Text("Update Painting", fontSize = 16.sp)
             }
         }
     }

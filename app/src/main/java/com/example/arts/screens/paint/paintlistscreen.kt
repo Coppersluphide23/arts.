@@ -45,6 +45,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.arts.ViewModel.ArtViewModel
 import com.example.arts.models.Art
+import com.example.arts.navigation.ROUTE_ADDPAINT
 import com.example.arts.navigation.ROUTE_UPDATEPAINTS
 
 //import com.example.arts.models.
@@ -60,7 +61,7 @@ fun PaintListScreen(navController: NavHostController){
     Scaffold(
         // Add a topbar
         topBar = {
-            CenterAlignedTopAppBar(title = {Text("Product List", color = Color(0xFFC0EDAD), fontSize = 30.sp)},
+            CenterAlignedTopAppBar(title = {Text("Paintings List", color = Color(0xFFC0EDAD), fontSize = 30.sp)},
 
                 colors = topAppBarColors(
                     containerColor = Color(0xFFEDADE0),
@@ -70,7 +71,7 @@ fun PaintListScreen(navController: NavHostController){
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {navController.navigate("")}
+                onClick = {navController.navigate(ROUTE_ADDPAINT)}
             ){
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -109,23 +110,28 @@ fun PaintListScreen(navController: NavHostController){
                         .fillMaxWidth()
                         .padding(bottom = 16.dp),
                 ){
+                    //product image
+                    AsyncImage(
+                        model = item.imageUrl,
+                        contentDescription ="Image",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .height(250.dp)
+                            .fillMaxWidth()
+                    )
 
                     //column
                     Column(modifier = Modifier.padding(16.dp))
                     {
-                       // Text(text = item.name,
-                          //  color=Color.Black,
-                            //fontSize = 28.sp)
-                        //Text(//
-                         //   text=item.description,
-                           // fontSize = 24.sp,
-                           // color = Color(0xFF182138)
-                     //   )
-                       // Text(
-                           // text=item.price,
-                           // fontSize = 24.sp,
-                          //  color = Color(0xFFC23A3A)
-                        //)
+                       Text(text = item.name,
+                           color=Color.Black,
+                            fontSize = 28.sp)
+                        Text(
+                            text=item.description,
+                            fontSize = 24.sp,
+                        color = Color(0xFF182138)
+                        )
+
                     }
                     //row
                     Row(

@@ -56,23 +56,27 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
+import androidx.compose.foundation.clickable
 import com.example.arts.R
 import com.example.arts.ViewModel.AuthViewModel
 import com.example.arts.ViewModel.ArtViewModel
 import com.example.arts.models.Art
+import com.example.arts.navigation.ROUTE_PAINTDETAILS
+import com.example.arts.navigation.ROUTE_PROFILE
+
 //import com.example.firstapp.navigation.ROUTE_PROFILE
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserDashboard(navController: NavHostController){
+fun UserDashboardSCreen(navController: NavHostController){
     var context = LocalContext.current
-    var myproductViewModel = ArtViewModel(navController, context)
+    var myArtViewModel = ArtViewModel(navController, context)
     var myauthviewmodel = AuthViewModel(navController, context)
     var username by remember { mutableStateOf("loading..") }
     var products = remember { mutableStateListOf<Art>() }
     //fetch products from firebase and logged in user
     LaunchedEffect(Unit) {
-        myproductViewModel.allProducts(products)
+        myArtViewModel.allProducts(products)
         myauthviewmodel.getCurrentUsername { username = it }
     }
     //add a scaffold
@@ -112,13 +116,7 @@ fun UserDashboard(navController: NavHostController){
                         contentDescription = "Person icon")},
                     label = { Text("Profile",color= Color(0XFF994A3C))},
                 )
-                NavigationBarItem(
-                    selected =true,
-                    onClick = {},
-                    icon = {Icon(Icons.Default.ShoppingCart,
-                        contentDescription = "Cart icon")},
-                    label = { Text("Cart",color= Color(0xFF994A3C))}
-                )
+
 
             }
         }
@@ -140,51 +138,70 @@ fun UserDashboard(navController: NavHostController){
             OutlinedTextField(
                 value = searchText,
                 onValueChange = {searchText = it},
-                placeholder = { Text("Search products...")},
+                placeholder = { Text("Search paintings...")},
                 leadingIcon = {Icon(imageVector = Icons.Default.Search,
                     contentDescription = "Search icon")},
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text="featured products",
-                color=Color(0xFF),
-                style= MaterialTheme.typography.titleLarge)
-            Spacer(modifier= Modifier.height(8.dp))
+            val filteredProducts = if (searchText.isBlank()) {
+                products
+            } else {
+                products.filter {
+                    it.name.contains(searchText, ignoreCase = true) ||
+                            it.description.contains(searchText, ignoreCase = true)
+                }
+            }
+            Text(
+                text = "Featured Products",
+                style = MaterialTheme.typography.titleLarge
+            )
+            Spacer(modifier = Modifier.height(8.dp))
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ){
-                items(products){product ->
-                    //product card
+            ) {
+                items(filteredProducts) { product ->
+                    // product card
                     Card(
                         modifier = Modifier
-                            .width(200.dp),
+                            .width(200.dp)
+                            .clickable {
+                                navController.navigate("$ROUTE_PAINTDETAILS/${product.id}")
+                            },
                         shape = RoundedCornerShape(12.dp),
                         elevation = CardDefaults.cardElevation(8.dp)
-                    ){
+                    ) {
                         Column(
                             modifier = Modifier.padding(8.dp)
-                        ){
+                        ) {
                             Image(
                                 painter = rememberAsyncImagePainter(product.imageUrl),
                                 contentDescription = product.name,
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(150.dp)
+                                    .height(350.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .clickable {
+                                        navController.navigate("$ROUTE_PAINTDETAILS/${product.id}")
+                                    }
                             )
-                            //product name
-                            Text(text = product.name,
+                            Spacer(modifier = Modifier.height(8.dp))
+                            // product name
+                            Text(
+                                text = product.name,
                                 fontSize = 18.sp,
-                                color = Color(0xFF),
-                                fontWeight = FontWeight.Bold)
-                            //product description
-                            Text(text = product.description,fontSize = 14.sp)
-
+                                fontWeight = FontWeight.Bold
+                            )
+                            // product description
+                            Text(
+                                text = product.description,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Normal
+                            )
                         }
-
                     }
-
                 }
             }
         }
@@ -193,5 +210,5 @@ fun UserDashboard(navController: NavHostController){
 @Preview(showBackground = true)
 @Composable
 fun UserDashboardPreview() {
-    UserDashboard(rememberNavController())
+    UserDashboardSCreen(rememberNavController())
 }

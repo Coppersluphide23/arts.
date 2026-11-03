@@ -10,13 +10,14 @@ import androidx.navigation.compose.rememberNavController
 import com.example.arts.screens.dashboard.DashboardScreen
 import com.example.arts.screens.login.LoginScreen
 import com.example.arts.screens.paint.AddPaintScreen
+import com.example.arts.screens.paint.PaintDetailsScreen
 import com.example.arts.screens.paint.PaintListScreen
 import com.example.arts.screens.paint.UpdatePaintScreen
 import com.example.arts.screens.profile.ProfileScreen
-import com.example.arts.screens.profile.ProfileScreenPreview
 import com.example.arts.screens.register.RegisterScreen
-import com.example.arts.screens.userdash.UserDashboard
-import com.example.arts.screens.userdash.UserDashboardPreview
+import com.example.arts.screens.userdash.UserDashboardSCreen
+
+
 
 @Composable
 fun AppNavHost(
@@ -33,10 +34,10 @@ fun AppNavHost(
             OnboardingScreen(navController)
         }
         composable(ROUTE_LOGIN) {
-            RegisterScreen(navController)
+            LoginScreen(navController)
         }
         composable(ROUTE_REGISTER) {
-            LoginScreen(navController)
+            RegisterScreen(navController)
         }
         composable(ROUTE_DASHBOARD) {
             DashboardScreen(navController)
@@ -52,10 +53,14 @@ fun AppNavHost(
             UpdatePaintScreen(navController, productId = artsId)
         }
         composable(ROUTE_USERDASH){
-            UserDashboard(navController)
+            UserDashboardSCreen(navController)
         }
         composable(ROUTE_PROFILE){
             ProfileScreen(navController)
+        }
+        composable(ROUTE_PAINTDETAILS + "/{productId}") { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("productId")!!
+            PaintDetailsScreen(navController, productId = productId)
         }
 
 

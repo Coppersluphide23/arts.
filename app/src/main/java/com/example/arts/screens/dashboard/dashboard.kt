@@ -55,6 +55,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.arts.ViewModel.AuthViewModel
+import com.example.arts.navigation.ROUTE_ADDPAINT
+import com.example.arts.navigation.ROUTE_PAINTLIST
+import com.example.arts.navigation.ROUTE_PROFILE
+import com.example.arts.navigation.ROUTE_USERDASH
 
 //import com.example.firstapp.navigation.ROUTE_ADDPRODUCT
 //import com.example.firstapp.navigation.ROUTE_INTENTS
@@ -78,7 +82,7 @@ fun DashboardScreen(navController: NavHostController) {
                     titleContentColor = Color.Black
                 ),
                 actions = {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {navController.navigate (ROUTE_PROFILE)}) {
                         Icon(
                             imageVector = Icons.Default.Person,
                             contentDescription = "Profile"
@@ -108,7 +112,7 @@ fun DashboardScreen(navController: NavHostController) {
                 containerColor = Color(0XFFADEDBA)
             ){NavigationBarItem(
                 selected = true,
-                onClick = {},
+                onClick = {navController.navigate(ROUTE_USERDASH)},
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Home,
@@ -133,7 +137,7 @@ fun DashboardScreen(navController: NavHostController) {
                 )
                 NavigationBarItem(
                     selected = false,
-                    onClick = { /* navController.navigate(ROUTE_PROFILE) */ },
+                    onClick = {  navController.navigate(ROUTE_PROFILE)  },
                     icon = {
                         Icon(
                             imageVector = Icons.Default.Person,
@@ -150,7 +154,7 @@ fun DashboardScreen(navController: NavHostController) {
 
         // Floating action button
         floatingActionButton = {
-            FloatingActionButton(onClick = {}) {
+            FloatingActionButton(onClick = {navController.navigate(ROUTE_ADDPAINT)}) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Add"
@@ -177,14 +181,14 @@ fun DashboardScreen(navController: NavHostController) {
             //row
             Row {
                 DashboardCard(
-                    title = "Add product",
+                    title = "Add painting",
                     background = Color.Gray,
-                    onClick = {  }
+                    onClick = {navController.navigate(ROUTE_ADDPAINT) }
                 )
                 DashboardCard(
-                    title = "Product list",
+                    title = "Paintings list",
                     background = Color.Yellow,
-                    onClick = {  }
+                    onClick = {navController.navigate(ROUTE_PAINTLIST)  }
                 )
 
             }
@@ -192,10 +196,10 @@ fun DashboardScreen(navController: NavHostController) {
                 DashboardCard(
                     title = "User dashboard",
                     background = Color.Red,
-                    onClick = {  }
+                    onClick = {navController.navigate(ROUTE_USERDASH) }
                 )
                 DashboardCard(
-                    title = "Intents",
+                    title = "Blank",
                     background = Color.White,
                     onClick = { }
                 )
