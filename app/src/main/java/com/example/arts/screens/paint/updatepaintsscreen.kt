@@ -16,7 +16,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CheckboxDefaults.colors
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -42,6 +46,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.arts.ViewModel.ArtViewModel
 import com.example.arts.models.Art
+import com.example.arts.models.availableCategoryNames
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,8 +55,11 @@ fun UpdatePaintScreen(
     productId: String,
     viewModel: ArtViewModel = ArtViewModel(navController, LocalContext.current)
 ) {
+    val categories = availableCategoryNames
     var productName by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
+    var category by remember { mutableStateOf(categories.getOrElse(0) { "" }) }
+    var categoryExpanded by remember { mutableStateOf(false) }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var imageUrl by remember { mutableStateOf<String?>(null) }
 
@@ -69,10 +77,13 @@ fun UpdatePaintScreen(
                 art?.let {
                     productName = it.name
                     description = it.description
-                   imageUrl = it.imageUrl
-               }
-           }
-   }
+                    if (it.category.isNotBlank()) {
+                        category = it.category
+                    }
+                    imageUrl = it.imageUrl
+                }
+            }
+    }
 
     Scaffold(
         topBar = {
@@ -96,7 +107,7 @@ fun UpdatePaintScreen(
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Text(
-                text = "Update Product Details",
+                text = "Update Painting's Details",
                 fontSize = 20.sp,
                 color = Color(0xFF832B1C)
             )
@@ -104,7 +115,7 @@ fun UpdatePaintScreen(
             OutlinedTextField(
                 value = productName,
                 onValueChange = { productName = it },
-                label = { Text("Product Name") },
+                label = { Text("Painting's name") },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -115,7 +126,35 @@ fun UpdatePaintScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-
+            // Category Selection Dropdown
+            ExposedDropdownMenuBox(
+                expanded = categoryExpanded,
+                onExpandedChange = { categoryExpanded = !categoryExpanded },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                OutlinedTextField(
+                    value = category,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Category") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = categoryExpanded) },
+                    modifier = Modifier.menuAnchor().fillMaxWidth()
+                )
+                ExposedDropdownMenu(
+                    expanded = categoryExpanded,
+                    onDismissRequest = { categoryExpanded = false }
+                ) {
+                    categories.forEach { cat ->
+                        DropdownMenuItem(
+                            text = { Text(cat) },
+                            onClick = {
+                                category = cat
+                                categoryExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
 
             // Image Preview (New selected URI or fallback to fetched remote URL)
             val imageSource: Any? = imageUri ?: imageUrl
@@ -142,6 +181,7 @@ fun UpdatePaintScreen(
                         productId = productId,
                         name = productName,
                         description = description,
+                        category = category,
                         imageUri = imageUri
                     )
                 },

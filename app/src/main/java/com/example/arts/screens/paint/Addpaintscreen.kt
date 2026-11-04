@@ -5,6 +5,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,12 +13,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -43,6 +49,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.arts.R
 import com.example.arts.ViewModel.ArtViewModel
+import com.example.arts.models.availableCategoryNames
 
 //create addpaint screen preview
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,13 +76,18 @@ fun AddPaintScreen(navController : NavHostController){
                 .fillMaxSize()
                 .background(Color.White)
                 .padding(16.dp)
-                .padding(innerpadding),
+                .padding(innerpadding)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(text= "Add painting",fontSize = 20.sp, color = Color(0xFF832B1C))
             Spacer(modifier = Modifier.height(10.dp))
             var productName by remember { mutableStateOf("") }
             var description by remember { mutableStateOf( "") }
+            val categories = availableCategoryNames
+            var selectedCategory by remember { mutableStateOf(categories.getOrElse(0) { "" }) }
+            var categoryExpanded by remember { mutableStateOf(false) }
+
             var imageUri by remember {mutableStateOf<Uri?>(null)}
             val imagePickerLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.GetContent(),
@@ -88,7 +100,7 @@ fun AddPaintScreen(navController : NavHostController){
                 value = productName,
                 onValueChange = {productName=it},
                 label = { Text("Painting's Name")},
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.fillMaxWidth().padding(8.dp)
             )
             Spacer(modifier = Modifier.height(10.dp))
 
@@ -96,9 +108,41 @@ fun AddPaintScreen(navController : NavHostController){
                 value = description,
                 onValueChange = { description=it },
                 label = { Text("Painting's description")},
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.fillMaxWidth().padding(8.dp)
             )
             Spacer(modifier = Modifier.height(10.dp))
+
+            // Category Dropdown
+            ExposedDropdownMenuBox(
+                expanded = categoryExpanded,
+                onExpandedChange = { categoryExpanded = !categoryExpanded },
+                modifier = Modifier.fillMaxWidth().padding(8.dp)
+            ) {
+                OutlinedTextField(
+                    value = selectedCategory,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Select Category") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = categoryExpanded) },
+                    modifier = Modifier.menuAnchor().fillMaxWidth()
+                )
+                ExposedDropdownMenu(
+                    expanded = categoryExpanded,
+                    onDismissRequest = { categoryExpanded = false }
+                ) {
+                    categories.forEach { category ->
+                        DropdownMenuItem(
+                            text = { Text(category) },
+                            onClick = {
+                                selectedCategory = category
+                                categoryExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+
             //image preview
             Card(
                 shape = CircleShape,
@@ -124,6 +168,7 @@ fun AddPaintScreen(navController : NavHostController){
                     myArtViewmodel.addProduct(
                         name = productName,
                         description = description,
+                        category = selectedCategory,
                         imageUri = imageUri
                     )
                     //clear outlined TextFields

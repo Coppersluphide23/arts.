@@ -1,18 +1,24 @@
 package com.example.arts.screens.paint
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Fullscreen
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -40,6 +46,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
@@ -55,6 +63,7 @@ fun PaintDetailsScreen(
 ) {
     var art by remember { mutableStateOf<Art?>(null) }
     var isLoading by remember { mutableStateOf(true) }
+    var isFullScreenImageVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(productId) {
         viewModel.databasereference.child(productId).get()
@@ -110,6 +119,44 @@ fun PaintDetailsScreen(
             }
         } else {
             val currentArt = art!!
+
+            // Full-screen Image Viewer Dialog
+            if (isFullScreenImageVisible) {
+                Dialog(
+                    onDismissRequest = { isFullScreenImageVisible = false },
+                    properties = DialogProperties(usePlatformDefaultWidth = false)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black)
+                            .clickable { isFullScreenImageVisible = false }
+                    ) {
+                        AsyncImage(
+                            model = currentArt.imageUrl,
+                            contentDescription = currentArt.name,
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .align(Alignment.Center)
+                        )
+                        IconButton(
+                            onClick = { isFullScreenImageVisible = false },
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(16.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Close full screen",
+                                tint = Color.White,
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
+                    }
+                }
+            }
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -122,17 +169,47 @@ fun PaintDetailsScreen(
                 Card(
                     shape = RoundedCornerShape(16.dp),
                     elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { isFullScreenImageVisible = true }
                 ) {
-                    AsyncImage(
-                        model = currentArt.imageUrl,
-                        contentDescription = currentArt.name,
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(350.dp)
-                            .background(Color.Black.copy(alpha = 0.05f))
-                    )
+                    Box {
+                        AsyncImage(
+                            model = currentArt.imageUrl,
+                            contentDescription = currentArt.name,
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(350.dp)
+                                .background(Color.Black.copy(alpha = 0.05f))
+                        )
+                        // Fullscreen hint overlay
+                        Card(
+                            shape = RoundedCornerShape(8.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color.Black.copy(alpha = 0.6f)),
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .padding(8.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Fullscreen,
+                                    contentDescription = "Full Screen",
+                                    tint = Color.White,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(
+                                    text = "Tap for Fullscreen",
+                                    color = Color.White,
+                                    fontSize = 12.sp
+                                )
+                            }
+                        }
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -152,6 +229,22 @@ fun PaintDetailsScreen(
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF994A3C)
                         )
+
+                        if (currentArt.category.isNotBlank()) {
+                            Spacer(modifier = Modifier.height(6.dp))
+                            Card(
+                                shape = RoundedCornerShape(8.dp),
+                                colors = CardDefaults.cardColors(containerColor = Color(0xFFEDADE0).copy(alpha = 0.4f))
+                            ) {
+                                Text(
+                                    text = "Category: ${currentArt.category}",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = Color(0xFF832B1C),
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                                )
+                            }
+                        }
 
                         Spacer(modifier = Modifier.height(12.dp))
 

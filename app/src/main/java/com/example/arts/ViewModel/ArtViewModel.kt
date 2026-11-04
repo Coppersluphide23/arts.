@@ -36,7 +36,7 @@ class ArtViewModel (var navController: NavHostController, val context: Context) 
     //functions
     //crud-create,read,update & delete
     //upload product to firebase realtime database
-    fun addProduct(name: String, description: String, imageUri: Uri?) {
+    fun addProduct(name: String, description: String, imageUri: Uri?, category: String) {
         val ref = databasereference.push()
         val currentUser = FirebaseAuth.getInstance().currentUser
         val userId = currentUser?.uid ?: ""
@@ -52,6 +52,7 @@ class ArtViewModel (var navController: NavHostController, val context: Context) 
                     "id" to ref.key,
                     "name" to name,
                     "description" to description,
+                    "category" to category,
                     "userId" to userId,
                     "imageUrl" to imageUrl
                 )
@@ -120,7 +121,7 @@ class ArtViewModel (var navController: NavHostController, val context: Context) 
 
     //u-update
     //update existing product in firebase
-    fun updatePaintings(productId: String, name: String, description: String, imageUri: Uri?){
+    fun updatePaintings(productId: String, name: String, description: String, category: String = "", imageUri: Uri?){
         CoroutineScope(Dispatchers.IO).launch {
             try{
                 val newImageUrl = imageUri?.let{uploadToCloudinary(context,it)}
@@ -130,6 +131,7 @@ class ArtViewModel (var navController: NavHostController, val context: Context) 
                     "id" to productId,
                     "name" to name,
                     "description" to description,
+                    "category" to category,
                     "userId" to userId,
                 )
                 if(!newImageUrl.isNullOrEmpty()){
@@ -150,8 +152,8 @@ class ArtViewModel (var navController: NavHostController, val context: Context) 
 
     }
 
-    fun updateProduct(productId: String, name: String, description: String, imageUri: Uri?) =
-        updatePaintings(productId, name, description, imageUri)
+    fun updateProduct(productId: String, name: String, description: String, category: String = "", imageUri: Uri?) =
+        updatePaintings(productId = productId, name = name, description = description, category = category, imageUri = imageUri)
     //d-delete
     //deletes an existing product from realtime db
     fun deleteProduct(productId: String){
