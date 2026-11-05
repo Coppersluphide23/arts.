@@ -78,7 +78,7 @@ fun ProfileScreen(navController: NavHostController) {
                     }
                 },
                 colors = topAppBarColors(
-                    containerColor = Color(0xFFBF847C),
+                    containerColor = Color(0xFFEDADE0),
                     titleContentColor = Color.Black
                 )
             )
@@ -111,7 +111,7 @@ fun ProfileScreen(navController: NavHostController) {
                         imageVector = Icons.Default.Person,
                         contentDescription = "Profile Picture",
                         modifier = Modifier.size(60.dp),
-                        tint = Color(0xFF994A3C)
+                        tint = Color.Gray
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -123,7 +123,7 @@ fun ProfileScreen(navController: NavHostController) {
                 Text(
                     text = user!!.email,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray
+                    color = Color(0xFF994A3C)
                 )
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -146,7 +146,7 @@ fun ProfileScreen(navController: NavHostController) {
                 Button(
                     onClick = { myauthviewmodel.signout() },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF24030))
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEDADE0))
                 ) {
                     Text("Sign Out", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                 }
@@ -173,13 +173,13 @@ fun ProfileInfoCard(title: String, value: String, icon: ImageVector) {
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(Color(0xFFE0E0E0)),
+                    .background(Color(0xFFEDDAAD)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = icon,
                     contentDescription = title,
-                    tint = Color(0xFF994A3C),
+                    tint = Color(0XFFE0E0E0),
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -188,14 +188,14 @@ fun ProfileInfoCard(title: String, value: String, icon: ImageVector) {
                 Text(
                     text = title,
                     fontSize = 12.sp,
-                    color = Color.Gray
+                    color = Color.Black
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = value.ifEmpty { "N/A" },
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color.Black
+                    color = Color(0xFF994A3C)
                 )
             }
         }

@@ -10,14 +10,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.AlertDialogDefaults.containerColor
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonDefaults.buttonColors
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -30,10 +33,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,101 +49,127 @@ import com.example.arts.R
 import com.example.arts.ViewModel.AuthViewModel
 import com.example.arts.navigation.ROUTE_REGISTER
 
-//import com.example.firstapp.ViewModel.AuthViewModel
-//import com.example.firstapp.navigation.ROUTE_DASHBOARD
-//import com.example.firstapp.navigation.ROUTE_REGISTER
-
 @Composable
-fun LoginScreen(navController: NavHostController){
+fun LoginScreen(
+    navController: NavHostController,
+    viewModel: AuthViewModel? = if (LocalInspectionMode.current) null else AuthViewModel(navController, LocalContext.current)
+) {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
-            .padding(20.dp),
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(Color(0xFFEDADE0).copy(alpha = 0.45f), Color(0xFFFAFAFA))
+                )
+            )
+            .padding(24.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
-
     ) {
-        Text(
-            text = "LOGIN",
-            fontSize = 40.sp,
-            color = Color.Black,
-            fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily.Default
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            text="Already have an account?Login here",
-            color= Color.Blue,
-            fontSize = 20.sp
-        )
         Image(
-            painter = painterResource(id = R.drawable.mountain_adventure_logo),
-            contentDescription = "pink tulips image",
+            painter = painterResource(id = R.drawable.eyes),
+            contentDescription = "Mona Lisa Eyes Logo",
             modifier = Modifier
-                .size(200.dp)
+                .size(130.dp)
                 .clip(CircleShape)
         )
-        var email by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Enter Email") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Email,
-                    contentDescription = "Email Icon"
-                )
-            }
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Enter Password") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-            visualTransformation = PasswordVisualTransformation(),
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Lock,
-                    contentDescription = "Lock Icon"
-                )
-            }
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        val context= LocalContext.current
-        val myAuth= AuthViewModel(navController, context)
-        Button(
-            onClick = {
-                myAuth.login(email,password)
-            },
-            modifier = Modifier.fillMaxWidth(),
-            colors = buttonColors(containerColor = Color.Blue,
-                contentColor = Color.White
-            )
 
-        )
-        {
-            Text("Login", fontSize = 20.sp)
-        }
-        // Text button
-        TextButton(onClick = { navController.navigate(ROUTE_REGISTER) }) {
-            Text(text = "Don't have an account? Sign up?", color = Color.Blue)
-        }
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // Display the entered email
         Text(
-            text = "email entered is $email"
+            text = "Welcome Back",
+            fontSize = 28.sp,
+            color = Color(0xFF994A3C),
+            fontWeight = FontWeight.Bold
         )
+
+        Text(
+            text = "Sign in to explore and save fine art",
+            fontSize = 14.sp,
+            color = Color.DarkGray
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp)
+            ) {
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text("Enter Email") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Email,
+                            contentDescription = "Email Icon",
+                            tint = Color(0xFF994A3C)
+                        )
+                    }
+                )
+
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text("Enter Password") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    visualTransformation = PasswordVisualTransformation(),
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Lock,
+                            contentDescription = "Lock Icon",
+                            tint = Color(0xFF994A3C)
+                        )
+                    }
+                )
+
+                Button(
+                    onClick = {
+                        viewModel?.login(email, password)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    colors = buttonColors(
+                        containerColor = Color(0xFF994A3C),
+                        contentColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("LOGIN", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        TextButton(onClick = { navController.navigate(ROUTE_REGISTER) }) {
+            Text(
+                text = "Don't have an account? Sign Up",
+                color = Color(0xFF832B1C),
+                fontWeight = FontWeight.SemiBold
+            )
+        }
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-fun LoginScreenPreview(){
+fun LoginScreenPreview() {
     LoginScreen(rememberNavController())
 }

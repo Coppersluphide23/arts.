@@ -20,6 +20,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
@@ -62,8 +64,10 @@ import com.example.arts.ViewModel.ArtViewModel
 import com.example.arts.ViewModel.AuthViewModel
 import com.example.arts.models.Art
 import com.example.arts.models.categoryList
+import com.example.arts.navigation.ROUTE_FAVORITES
 import com.example.arts.navigation.ROUTE_PAINTDETAILS
 import com.example.arts.navigation.ROUTE_PROFILE
+import com.example.arts.utils.FavoritesManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,6 +79,7 @@ fun UserDashboardSCreen(navController: NavHostController) {
     val products = remember { mutableStateListOf<Art>() }
     var selectedCategory by remember { mutableStateOf("All") }
     var searchText by remember { mutableStateOf("") }
+    var favoriteIds by remember { mutableStateOf(FavoritesManager.getFavoriteIds(context)) }
 
     LaunchedEffect(Unit) {
         myArtViewModel.allProducts(products)
@@ -124,6 +129,17 @@ fun UserDashboardSCreen(navController: NavHostController) {
                         )
                     },
                     label = { Text("Profile", color = Color(0XFF994A3C)) }
+                )
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { navController.navigate(ROUTE_FAVORITES) },
+                    icon = {
+                        Icon(
+                            Icons.Default.FavoriteBorder,
+                            contentDescription = "Favorites icon"
+                        )
+                    },
+                    label = { Text("Favorites", color = Color(0xFF994A3C)) }
                 )
             }
         }
@@ -266,18 +282,34 @@ fun UserDashboardSCreen(navController: NavHostController) {
                             Column(
                                 modifier = Modifier.padding(8.dp)
                             ) {
-                                Image(
-                                    painter = rememberAsyncImagePainter(product.imageUrl),
-                                    contentDescription = product.name,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(220.dp)
-                                        .clip(RoundedCornerShape(8.dp))
-                                        .clickable {
-                                            navController.navigate("$ROUTE_PAINTDETAILS/${product.id}")
-                                        }
-                                )
+                                Box {
+                                    Image(
+                                        painter = rememberAsyncImagePainter(product.imageUrl),
+                                        contentDescription = product.name,
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(220.dp)
+                                            .clip(RoundedCornerShape(8.dp))
+                                            .clickable {
+                                                navController.navigate("$ROUTE_PAINTDETAILS/${product.id}")
+                                            }
+                                    )
+                                    val isFav = favoriteIds.contains(product.id)
+                                    IconButton(
+                                        onClick = {
+                                            FavoritesManager.toggleFavorite(context, product.id)
+                                            favoriteIds = FavoritesManager.getFavoriteIds(context)
+                                        },
+                                        modifier = Modifier.align(Alignment.TopEnd)
+                                    ) {
+                                        Icon(
+                                            imageVector = if (isFav) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                            contentDescription = "Favorite Icon",
+                                            tint = if (isFav) Color(0xFFE53935) else Color.White
+                                        )
+                                    }
+                                }
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text(
                                     text = product.name,

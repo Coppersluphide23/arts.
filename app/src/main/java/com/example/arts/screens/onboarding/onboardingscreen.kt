@@ -47,19 +47,19 @@ data class OnboardingItem(
 
 val OnboardingItems = listOf(
     OnboardingItem(
-        imageRes = R.drawable.mountain_adventure_logo,
+        imageRes = R.drawable.monetsunset,
         title = "Welcome to Arts",
-        description = "Discover amazing artwork and creative designs from artists around the world."
+        description = "Discover amazing artpieces from renowned artists and historic movements ."
     ),
     OnboardingItem(
-        imageRes = R.drawable.mountain_adventure_logo,
-        title = "Explore & Create",
-        description = "Connect with other creators and showcase your artistic portfolio."
+        imageRes = R.drawable.monetlizzatmillz,
+        title = "Discover Fine art ",
+        description = "Explore a gallery of artwork from different parts of the globe"
     ),
     OnboardingItem(
-        imageRes = R.drawable.mountain_adventure_logo,
+        imageRes = R.drawable.arancio,
         title = "Get Started Today",
-        description = "Sign up now and join our growing community of art lovers."
+        description = "Sign up now and learn more about art"
     )
 )
 
@@ -70,6 +70,7 @@ fun OnboardingScreen(navController: NavHostController) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
+
     ) {
         //show skip if not in the last page
         if (pagerState.currentPage!=OnboardingItems.lastIndex){

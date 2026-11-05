@@ -9,13 +9,13 @@ data class CategoryItem(
 )
 
 val categoryList = listOf(
-    CategoryItem("All", R.drawable.mountain_adventure_logo),
-    CategoryItem("Sculptures", R.drawable.mountain_adventure_logo),
-    CategoryItem("European Art", R.drawable.mountain_adventure_logo),
-    CategoryItem("Modern Art", R.drawable.mountain_adventure_logo),
-    CategoryItem("African Art", R.drawable.mountain_adventure_logo),
-    CategoryItem("Japanese Art", R.drawable.mountain_adventure_logo),
-    CategoryItem("Abstract", R.drawable.mountain_adventure_logo)
+    CategoryItem("All", R.drawable.schoolofathens),
+    CategoryItem("Sculptures", R.drawable.david),
+    CategoryItem("European Art", R.drawable.european),
+    CategoryItem("Modern Art", R.drawable.modern),
+    CategoryItem("African Art", R.drawable.africa),
+    CategoryItem("Japanese Art", R.drawable.waveofkanagwa),
+
 )
 
 val availableCategoryNames: List<String>

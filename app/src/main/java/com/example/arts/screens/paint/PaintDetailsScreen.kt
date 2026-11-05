@@ -18,6 +18,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Fullscreen
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -53,6 +55,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.arts.ViewModel.ArtViewModel
 import com.example.arts.models.Art
+import com.example.arts.utils.FavoritesManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,9 +64,11 @@ fun PaintDetailsScreen(
     productId: String,
     viewModel: ArtViewModel = ArtViewModel(navController, LocalContext.current)
 ) {
+    val context = LocalContext.current
     var art by remember { mutableStateOf<Art?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     var isFullScreenImageVisible by remember { mutableStateOf(false) }
+    var isFavorite by remember { mutableStateOf(FavoritesManager.isFavorite(context, productId)) }
 
     LaunchedEffect(productId) {
         viewModel.databasereference.child(productId).get()
@@ -86,6 +91,17 @@ fun PaintDetailsScreen(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
                             tint = Color.Black
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {
+                        isFavorite = FavoritesManager.toggleFavorite(context, productId)
+                    }) {
+                        Icon(
+                            imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            contentDescription = "Favorite Icon",
+                            tint = if (isFavorite) Color(0xFFE53935) else Color.Black
                         )
                     }
                 },

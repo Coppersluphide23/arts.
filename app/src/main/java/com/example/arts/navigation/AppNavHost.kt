@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.arts.screens.dashboard.DashboardScreen
+import com.example.arts.screens.favorites.FavoritesScreen
 import com.example.arts.screens.login.LoginScreen
 import com.example.arts.screens.paint.AddPaintScreen
 import com.example.arts.screens.paint.PaintDetailsScreen
@@ -61,6 +62,9 @@ fun AppNavHost(
         composable(ROUTE_PAINTDETAILS + "/{productId}") { backStackEntry ->
             val productId = backStackEntry.arguments?.getString("productId")!!
             PaintDetailsScreen(navController, productId = productId)
+        }
+        composable(ROUTE_FAVORITES){
+            FavoritesScreen(navController)
         }
 
 
