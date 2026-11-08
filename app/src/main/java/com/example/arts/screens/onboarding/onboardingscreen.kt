@@ -16,7 +16,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -25,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -37,7 +42,6 @@ import com.example.arts.R
 import com.example.arts.navigation.ROUTE_LOGIN
 import com.example.arts.navigation.ROUTE_ONBOARDING
 import kotlinx.coroutines.launch
-import kotlin.collections.get
 
 data class OnboardingItem(
     val imageRes: Int,
@@ -49,17 +53,17 @@ val OnboardingItems = listOf(
     OnboardingItem(
         imageRes = R.drawable.monetsunset,
         title = "Welcome to Arts",
-        description = "Discover amazing artpieces from renowned artists and historic movements ."
+        description = "Discover amazing artpieces from renowned artists and historic movements."
     ),
     OnboardingItem(
         imageRes = R.drawable.monetlizzatmillz,
-        title = "Discover Fine art ",
-        description = "Explore a gallery of artwork from different parts of the globe"
+        title = "Discover Fine Art",
+        description = "Explore a curated gallery of artwork from different parts of the globe."
     ),
     OnboardingItem(
         imageRes = R.drawable.arancio,
         title = "Get Started Today",
-        description = "Sign up now and learn more about art"
+        description = "Sign up now and immerse yourself in the world of fine art."
     )
 )
 
@@ -67,38 +71,41 @@ val OnboardingItems = listOf(
 fun OnboardingScreen(navController: NavHostController) {
     val pagerState = rememberPagerState(pageCount = { OnboardingItems.size })
     val scope = rememberCoroutineScope()
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
 
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        //show skip if not in the last page
-        if (pagerState.currentPage!=OnboardingItems.lastIndex){
+        // Show skip if not on the last page
+        if (pagerState.currentPage != OnboardingItems.lastIndex) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.End
-            ){
-                TextButton(onClick =  {
-                    navController.navigate(ROUTE_LOGIN){
-                        popUpTo(ROUTE_ONBOARDING){
-                            inclusive = true
+            ) {
+                TextButton(
+                    onClick = {
+                        navController.navigate(ROUTE_LOGIN) {
+                            popUpTo(ROUTE_ONBOARDING) { inclusive = true }
                         }
                     }
-                },modifier = Modifier
-                    .height(55.dp)
-                    .width(100.dp)){
-                    Text("Skip", fontSize = 18.sp, color = Color.Blue, fontWeight = FontWeight.Bold)
+                ) {
+                    Text(
+                        "Skip",
+                        fontSize = 16.sp,
+                        color = Color(0xFF994A3C),
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
-
-
+        } else {
+            Spacer(modifier = Modifier.height(48.dp))
         }
-        else{
-            Spacer(modifier = Modifier.height(40.dp))
-        }
-        //HORIZONTAL PAGES
+
+        // Horizontal Pager
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.weight(1f)
@@ -107,60 +114,68 @@ fun OnboardingScreen(navController: NavHostController) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                //image
-                Image(
-                    painter = painterResource(id = item.imageRes),
-                    contentDescription = item.title,
-                    modifier = Modifier.size(200.dp)
-                )
-                Spacer(modifier = Modifier.height(15.dp))
-                //title
+                Card(
+                    shape = RoundedCornerShape(20.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                    modifier = Modifier.size(240.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = item.imageRes),
+                        contentDescription = item.title,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+                Spacer(modifier = Modifier.height(28.dp))
                 Text(
                     text = item.title,
                     fontSize = 26.sp,
-                    color = Color.Blue,
+                    color = Color(0xFF994A3C),
                     fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
                 )
-                Spacer(modifier = Modifier.height(15.dp))
-                //DESCRIPTION
+                Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = item.description,
-                    fontSize = 18.sp,
-                    color = Color.Black,
+                    fontSize = 16.sp,
+                    color = Color(0xFF4A4A4A),
                     fontWeight = FontWeight.Normal,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    lineHeight = 22.sp
                 )
             }
         }
-        Spacer(modifier = Modifier.height(15.dp))
-        //page indicators
+
+        // Page indicators
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(vertical = 12.dp),
             horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             repeat(OnboardingItems.size) { index ->
                 val isSelected = pagerState.currentPage == index
                 Box(
                     modifier = Modifier
                         .padding(4.dp)
-                        .size(
-                            if (isSelected) 10.dp else 8.dp
-                        )
+                        .height(8.dp)
+                        .width(if (isSelected) 24.dp else 8.dp)
                         .clip(CircleShape)
                         .background(
-                            if (isSelected) Color(0xFF4E5F87) else Color.Gray
+                            if (isSelected) Color(0xFFEDADE0) else Color(0xFFE0E0E0)
                         )
                 )
             }
         }
-        Spacer(modifier = Modifier.height(15.dp))
-        //Next /Get started button
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Next / Get Started button
         Button(
             onClick = {
                 if (pagerState.currentPage < OnboardingItems.size - 1) {
@@ -168,23 +183,28 @@ fun OnboardingScreen(navController: NavHostController) {
                         pagerState.animateScrollToPage(pagerState.currentPage + 1)
                     }
                 } else {
-                    navController.navigate(ROUTE_LOGIN)
+                    navController.navigate(ROUTE_LOGIN) {
+                        popUpTo(ROUTE_ONBOARDING) { inclusive = true }
+                    }
                 }
             },
-            modifier = Modifier.fillMaxWidth()
-        )
-        {
-            Text(
-                text = if (pagerState.currentPage == OnboardingItems.size - 1) {
-                    "Get Started"
-                } else {
-                    "Next"
-                }
+            modifier = Modifier
+                .fillMaxWidth(0.85f)
+                .height(50.dp),
+            shape = RoundedCornerShape(25.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF507FE5),
+                contentColor = Color.White
             )
-
+        ) {
+            Text(
+                text = if (pagerState.currentPage == OnboardingItems.size - 1) "Get Started" else "Next",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
         }
 
-        Spacer(modifier = Modifier.height(60.dp))
+        Spacer(modifier = Modifier.height(36.dp))
     }
 }
 

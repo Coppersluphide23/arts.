@@ -14,9 +14,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Badge
-import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
@@ -74,7 +73,7 @@ fun ProfileScreen(navController: NavHostController) {
                 title = { Text("Profile") },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 colors = topAppBarColors(
@@ -89,66 +88,76 @@ fun ProfileScreen(navController: NavHostController) {
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator(color = Color.Blue)
+                CircularProgressIndicator(color = Color(0xFF994A3C))
             }
         } else if (user != null) {
             Column(
                 modifier = Modifier
                     .padding(innerpadding)
                     .fillMaxSize()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .background(Color.White)
+                    .padding(horizontal = 20.dp, vertical = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(12.dp))
                 Box(
                     modifier = Modifier
-                        .size(100.dp)
+                        .size(110.dp)
                         .clip(CircleShape)
-                        .background(Color(0xFFE0E0E0)),
+                        .background(Color(0xFFEDADE0)),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Default.Person,
                         contentDescription = "Profile Picture",
-                        modifier = Modifier.size(60.dp),
-                        tint = Color.Gray
+                        modifier = Modifier.size(68.dp),
+                        tint = Color(0xFF994A3C)
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = user!!.fullName,
                     style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
                 )
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = user!!.email,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF994A3C)
+                    color = Color(0xFF994A3C),
+                    fontWeight = FontWeight.Medium
                 )
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(28.dp))
 
                 Text(
                     text = "Account Information",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
+                    color = Color(0xFF994A3C),
                     modifier = Modifier.align(Alignment.Start)
                 )
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(14.dp))
 
                 ProfileInfoCard(title = "Full Name", value = user!!.fullName, icon = Icons.Default.Person)
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 ProfileInfoCard(title = "Email Address", value = user!!.email, icon = Icons.Default.Mail)
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 ProfileInfoCard(title = "Account Role", value = user!!.role, icon = Icons.Default.Badge)
-                Spacer(modifier = Modifier.height(16.dp))
-
+                Spacer(modifier = Modifier.height(28.dp))
 
                 Button(
                     onClick = { myauthviewmodel.signout() },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEDADE0))
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    shape = RoundedCornerShape(25.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF994A3C),
+                        contentColor = Color.White
+                    )
                 ) {
-                    Text("Sign Out", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    Text("Sign Out", fontWeight = FontWeight.Bold, fontSize = 16.sp)
                 }
             }
         }
@@ -159,9 +168,9 @@ fun ProfileScreen(navController: NavHostController) {
 fun ProfileInfoCard(title: String, value: String, icon: ImageVector) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        shape = RoundedCornerShape(14.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFFAFAFA)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
     ) {
         Row(
             modifier = Modifier
@@ -171,15 +180,15 @@ fun ProfileInfoCard(title: String, value: String, icon: ImageVector) {
         ) {
             Box(
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(44.dp)
                     .clip(CircleShape)
-                    .background(Color(0xFFEDDAAD)),
+                    .background(Color(0xFFEDADE0)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = icon,
                     contentDescription = title,
-                    tint = Color(0XFFE0E0E0),
+                    tint = Color(0xFF994A3C),
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -188,7 +197,7 @@ fun ProfileInfoCard(title: String, value: String, icon: ImageVector) {
                 Text(
                     text = title,
                     fontSize = 12.sp,
-                    color = Color.Black
+                    color = Color.Gray
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
@@ -201,6 +210,7 @@ fun ProfileInfoCard(title: String, value: String, icon: ImageVector) {
         }
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 fun ProfileScreenPreview() {
